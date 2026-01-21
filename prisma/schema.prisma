@@ -22,9 +22,13 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations
-  orders      Order[]
-  restaurant  Restaurant?
-  reviews     Review[]
+  orders     Order[]
+  restaurant Restaurant?
+  reviews    Review[]
+
+  // Auth fields
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
 
   @@map("users")
 }
@@ -49,7 +53,7 @@ model Restaurant {
   updatedAt DateTime @updatedAt
 
   // Relations
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   menuItems MenuItem[]
   orders    Order[]
 
@@ -70,8 +74,8 @@ model MenuItem {
   updatedAt    DateTime @updatedAt
 
   // Relations
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  orderItems   OrderItem[]
+  restaurant Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
 
   @@index([restaurantId])
   @@map("menu_items")
@@ -79,21 +83,21 @@ model MenuItem {
 
 // Order model for managing customer orders
 model Order {
-  id           String   @id @default(cuid())
+  id           String      @id @default(cuid())
   status       OrderStatus @default(PENDING)
   total        Float
   customerId   String
   restaurantId String
   notes        String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 
   // Relations
-  customer     User     @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  items        OrderItem[]
-  payment      Payment?
-  delivery     Delivery?
+  customer   User        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  restaurant Restaurant  @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  items      OrderItem[]
+  payment    Payment?
+  delivery   Delivery?
 
   @@index([customerId])
   @@index([restaurantId])
@@ -102,16 +106,16 @@ model Order {
 
 // OrderItem model for order line items
 model OrderItem {
-  id        String   @id @default(cuid())
-  orderId   String
+  id         String  @id @default(cuid())
+  orderId    String
   menuItemId String
-  quantity  Int
-  price     Float
-  notes     String?
+  quantity   Int
+  price      Float
+  notes      String?
 
   // Relations
-  order     Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  menuItem  MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+  order    Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItem MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
 
   @@index([orderId])
   @@index([menuItemId])
@@ -131,18 +135,18 @@ enum OrderStatus {
 
 // Payment model for payment processing
 model Payment {
-  id              String   @id @default(cuid())
-  orderId         String   @unique
+  id              String        @id @default(cuid())
+  orderId         String        @unique
   amount          Float
   paymentMethod   PaymentMethod
   status          PaymentStatus @default(PENDING)
   stripeSessionId String?
   transactionId   String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
   // Relations
-  order           Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@map("payments")
 }
@@ -168,19 +172,19 @@ enum PaymentStatus {
 
 // Delivery model for tracking deliveries
 model Delivery {
-  id        String   @id @default(cuid())
-  orderId   String   @unique
-  status    DeliveryStatus @default(PENDING)
-  address   String
-  latitude  Float?
-  longitude Float?
+  id            String         @id @default(cuid())
+  orderId       String         @unique
+  status        DeliveryStatus @default(PENDING)
+  address       String
+  latitude      Float?
+  longitude     Float?
   estimatedTime DateTime?
-  actualTime DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  actualTime    DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   // Relations
-  order     Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@map("deliveries")
 }
@@ -204,7 +208,7 @@ model Review {
   updatedAt DateTime @updatedAt
 
   // Relations
-  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("reviews")

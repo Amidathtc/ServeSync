@@ -57,3 +57,39 @@ export const login = async (req: Request, res: Response) => {
         }
     }
 };
+const forgotPasswordSchema = z.object({
+    email: z.string().email(),
+});
+
+const resetPasswordSchema = z.object({
+    token: z.string(),
+    password: z.string().min(6),
+});
+
+export const forgotPassword = async (req: Request, res: Response) => {
+    try {
+        const { email } = forgotPasswordSchema.parse(req.body);
+        await AuthService.forgotPassword(email);
+        res.status(200).json({ message: 'If an account with that email exists, a password reset link has been sent.' });
+    } catch (error: any) {
+        if (error instanceof z.ZodError) {
+            res.status(400).json({ error: error.issues });
+        } else {
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+    try {
+        const { token, password } = resetPasswordSchema.parse(req.body);
+        await AuthService.resetPassword(token, password);
+        res.status(200).json({ message: 'Password has been reset successfully.' });
+    } catch (error: any) {
+        if (error instanceof z.ZodError) {
+            res.status(400).json({ error: error.issues });
+        } else {
+            res.status(400).json({ error: error.message });
+        }
+    }
+};
