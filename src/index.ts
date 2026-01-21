@@ -1,24 +1,19 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
-import { Pool } from 'pg';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '@prisma/client';
+import authRoutes from './routes/auth.routes';
+import { prisma } from './config/prisma';
 
 dotenv.config();
 
-const connectionString = `${process.env.DATABASE_URL}`;
-
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
-
 const app: Express = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3100;
 
 // Middleware
 app.use(express.json());
 
 // Routes
+app.use('/auth', authRoutes);
+
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Welcome to ServeSync API' });
 });
