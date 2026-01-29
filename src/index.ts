@@ -1,6 +1,8 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth.routes';
+import restaurantRoutes from './routes/restaurant.routes';
+import orderRoutes from './routes/order.routes';
 import { prisma } from './config/prisma';
 
 dotenv.config();
@@ -13,6 +15,8 @@ app.use(express.json());
 
 // Routes
 app.use('/auth', authRoutes);
+app.use('/restaurants', restaurantRoutes);
+app.use('/orders', orderRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Welcome to ServeSync API' });

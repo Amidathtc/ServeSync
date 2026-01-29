@@ -1,0 +1,630 @@
+{
+    "info": {
+        "name": "ServeSync API",
+        "description": "Complete API collection for ServeSync Restaurant Management System",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "restaurantId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "menuItemId",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Authentication",
+            "item": [
+                {
+                    "name": "Register Customer",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "    pm.collectionVariables.set('token', pm.response.json().token);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"customer@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"John Customer\",\n    \"role\": \"CUSTOMER\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "register"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Register Kitchen Owner",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "    pm.collectionVariables.set('token', pm.response.json().token);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"chef@tastybytes.com\",\n    \"password\": \"securepass123\",\n    \"name\": \"Chef Gordon\",\n    \"role\": \"KITCHEN\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/register",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "register"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    pm.collectionVariables.set('token', pm.response.json().token);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"chef@tastybytes.com\",\n    \"password\": \"securepass123\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/login",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "login"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Profile",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/me",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "me"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Forgot Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"chef@tastybytes.com\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/forgot-password",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "forgot-password"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Reset Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"token\": \"your-reset-token-here\",\n    \"password\": \"newPassword456\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/auth/reset-password",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "reset-password"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Restaurants",
+            "item": [
+                {
+                    "name": "Create Restaurant",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "    pm.collectionVariables.set('restaurantId', pm.response.json().id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Tasty Bytes Restaurant\",\n    \"address\": \"123 Silicon Valley Boulevard, Tech City, CA 94025\",\n    \"phone\": \"+1-555-TASTY-01\",\n    \"email\": \"contact@tastybytes.com\",\n    \"image\": \"https://images.unsplash.com/photo-1517248135467-4c7edcad34c4\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/restaurants",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "restaurants"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "List All Restaurants",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/restaurants",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "restaurants"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Restaurant Details",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/restaurants/{{restaurantId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "restaurants",
+                                "{{restaurantId}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Restaurant",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Tasty Bytes - Updated\",\n    \"phone\": \"+1-555-TASTY-99\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/restaurants/{{restaurantId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "restaurants",
+                                "{{restaurantId}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Restaurant",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/restaurants/{{restaurantId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "restaurants",
+                                "{{restaurantId}}"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Menu Items",
+            "item": [
+                {
+                    "name": "Add Menu Item",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "    pm.collectionVariables.set('menuItemId', pm.response.json().id);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Binary Burger\",\n    \"description\": \"A delicious burger with 1s and 0s of flavor. Comes with crispy fries and a side of debugging sauce.\",\n    \"price\": 12.99,\n    \"category\": \"Mains\",\n    \"image\": \"https://images.unsplash.com/photo-1568901346375-23c9450c58cd\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/menu",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "restaurants",
+                                "{{restaurantId}}",
+                                "menu"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Pizza Menu Item",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Full Stack Pizza\",\n    \"description\": \"Layers of pepperoni, mushrooms, and melted cheese on a crispy crust. A complete meal!\",\n    \"price\": 15.99,\n    \"category\": \"Mains\",\n    \"image\": \"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/menu",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "restaurants",
+                                "{{restaurantId}}",
+                                "menu"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Dessert Item",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Cloud Cake\",\n    \"description\": \"Light and fluffy vanilla cake served with a side of whipped cream.\",\n    \"price\": 6.99,\n    \"category\": \"Desserts\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/menu",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "restaurants",
+                                "{{restaurantId}}",
+                                "menu"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Beverage Item",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"JSON Java Juice\",\n    \"description\": \"Freshly brewed coffee with a hint of caramel. Keeps you awake for late night coding!\",\n    \"price\": 4.50,\n    \"category\": \"Beverages\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/menu",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "restaurants",
+                                "{{restaurantId}}",
+                                "menu"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Menu Items",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/restaurants/{{restaurantId}}/menu",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "restaurants",
+                                "{{restaurantId}}",
+                                "menu"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Update Menu Item",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Binary Burger Deluxe\",\n    \"price\": 14.99,\n    \"description\": \"Upgraded with double patty and extra debugging sauce!\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/restaurants/menu/{{menuItemId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "restaurants",
+                                "menu",
+                                "{{menuItemId}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Menu Item",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/restaurants/menu/{{menuItemId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "restaurants",
+                                "menu",
+                                "{{menuItemId}}"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

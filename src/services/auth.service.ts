@@ -5,7 +5,7 @@ import { User, Role } from '@prisma/client';
 import crypto from 'crypto';
 import { sendPasswordResetEmail } from './email.service';
 
-export const registerUser = async (email: string, password: string, name: string) => {
+export const registerUser = async (email: string, password: string, name: string, role?: 'CUSTOMER' | 'KITCHEN') => {
     // Check if user exists
     const existingUser = await prisma.user.findUnique({
         where: { email },
@@ -24,7 +24,7 @@ export const registerUser = async (email: string, password: string, name: string
             email,
             password: hashedPassword,
             name,
-            role: Role.CUSTOMER, // Default role
+            role: role || Role.CUSTOMER, // Default role
         },
     });
 

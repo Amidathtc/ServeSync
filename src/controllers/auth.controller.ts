@@ -6,6 +6,7 @@ const registerSchema = z.object({
     email: z.string().email(),
     password: z.string().min(6),
     name: z.string().min(2),
+    role: z.enum(['CUSTOMER', 'KITCHEN']).optional(), // Allow registering as KITCHEN for MVP
 });
 
 const loginSchema = z.object({
@@ -15,8 +16,8 @@ const loginSchema = z.object({
 
 export const register = async (req: Request, res: Response) => {
     try {
-        const { email, password, name } = registerSchema.parse(req.body);
-        const { user, token } = await AuthService.registerUser(email, password, name);
+        const { email, password, name, role } = registerSchema.parse(req.body);
+        const { user, token } = await AuthService.registerUser(email, password, name, role);
 
         // Using { ...user } to avoid passing sensitive data if extended later, 
         // though Prisma return type includes password unless omitted in query.
