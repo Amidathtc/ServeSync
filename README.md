@@ -30,7 +30,7 @@ ServeSync is a modern, real-time Food Delivery Backend API built for the Nigeria
 
 1.  **Clone the repository**
     ```bash
-    git clone https://github.com/yourusername/servesync.git
+    git clone https://github.com/Amidathtc/servesync.git
     cd servesync
     ```
 
