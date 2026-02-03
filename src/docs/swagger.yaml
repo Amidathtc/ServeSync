@@ -1,0 +1,149 @@
+openapi: 3.0.0
+info:
+  title: ServeSync API
+  description: Real-time logistics and food delivery backend for the Nigerian market.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3100
+    description: Local Development Server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [CUSTOMER, DRIVER, RESTAURANT, ADMIN]
+    
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        total:
+          type: number
+        status:
+          type: string
+        deliveryAddress:
+           type: string
+
+tags:
+  - name: Auth
+  - name: Orders
+  - name: Payments
+  - name: Driver
+
+paths:
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password, role, name, phone]
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: string
+                  enum: [CUSTOMER, DRIVER, RESTAURANT]
+                name:
+                  type: string
+                phone:
+                  type: string
+      responses:
+        201:
+          description: User created
+        400:
+          description: Validation error
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Login successful (returns Token)
+
+  /orders:
+    post:
+      tags: [Orders]
+      summary: Create a new order
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [restaurantId, items, deliveryAddress]
+              properties:
+                restaurantId:
+                  type: string
+                deliveryAddress:
+                  type: string
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      menuItemId: 
+                        type: string
+                      quantity:
+                        type: integer
+      responses:
+        201:
+          description: Order created
+
+  /payments/initiate:
+    post:
+      tags: [Payments]
+      summary: Initiate a payment
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [orderId, method]
+              properties:
+                orderId:
+                  type: string
+                method:
+                  type: string
+                  enum: [CARD, USSD, TRANSFER, WALLET]
+      responses:
+        200:
+          description: Payment initiated successfully

@@ -1,12 +1,17 @@
 import { Router } from 'express';
 import * as RestaurantController from '../controllers/restaurant.controller';
 import * as MenuController from '../controllers/menu.controller';
+import * as RestaurantAnalyticsController from '../controllers/restaurant-analytics.controller';
 import { authenticate, authorize } from '../middlewares/auth.middleware';
 
 const router = Router();
 
+// Analytics Route
+router.get('/:restaurantId/dashboard', authenticate, authorize(['KITCHEN', 'ADMIN']), RestaurantAnalyticsController.getRestaurantDashboard);
+
 // Restaurant Routes
 // Create: Only KITCHEN or ADMIN
+// ... rest of the file
 router.post('/', authenticate, authorize(['KITCHEN', 'ADMIN']), RestaurantController.create);
 // Read: Public
 router.get('/', RestaurantController.list);

@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # Backend API
+  api:
+    build: .
+    ports:
+      - "3100:3100"
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/servesync_db
+      - PORT=3100
+      - NODE_ENV=production
+      - JWT_SECRET=change_me_in_prod
+      # Add other keys here or use env_file
+    depends_on:
+      - db
+    restart: always
+
+  # Database
+  db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=servesync_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

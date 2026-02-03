@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 import * as OrderService from '../services/order.service';
 import { OrderStatus } from '@prisma/client';
+import { WebSocketServer } from '../config/socket';
 
 // Validation schemas
 const placeOrderSchema = z.object({
@@ -12,6 +13,7 @@ const placeOrderSchema = z.object({
             quantity: z.number().int().min(1),
         })
     ).min(1),
+    deliveryAddress: z.string().min(5).optional(), // Optional delivery address
     notes: z.string().optional(),
 });
 
@@ -32,9 +34,12 @@ const updateStatusSchema = z.object({
 export const placeOrder = async (req: Request, res: Response) => {
     try {
         const customerId = req.user.userId;
-        const { restaurantId, items, notes } = placeOrderSchema.parse(req.body);
+        const { restaurantId, items, deliveryAddress, notes } = placeOrderSchema.parse(req.body);
 
-        const order = await OrderService.createOrder(customerId, restaurantId, items, notes);
+        // Get WebSocket server instance from app
+        const io: WebSocketServer = req.app.get('io');
+
+        const order = await OrderService.createOrder(customerId, restaurantId, items, deliveryAddress, notes, io);
 
         res.status(201).json({
             message: 'Order placed successfully',
@@ -145,7 +150,10 @@ export const updateStatus = async (req: Request, res: Response) => {
         const userId = req.user.userId;
         const { status } = updateStatusSchema.parse(req.body);
 
-        const order = await OrderService.updateOrderStatus(userId, id, status as OrderStatus);
+        // Get WebSocket server instance from app
+        const io: WebSocketServer = req.app.get('io');
+
+        const order = await OrderService.updateOrderStatus(userId, id, status as OrderStatus, io);
 
         res.json({
             message: 'Order status updated successfully',
@@ -173,7 +181,10 @@ export const cancelOrder = async (req: Request, res: Response) => {
         const userId = req.user.userId;
         const userRole = req.user.role;
 
-        const order = await OrderService.cancelOrder(userId, id, userRole);
+        // Get WebSocket server instance from app
+        const io: WebSocketServer = req.app.get('io');
+
+        const order = await OrderService.cancelOrder(userId, id, userRole, io);
 
         res.json({
             message: 'Order cancelled successfully',

@@ -11,7 +11,7 @@
  */
 
 async function testOrderProcessing() {
-    const baseUrl = 'http://localhost:3000';
+    const baseUrl = 'http://localhost:3100';
     console.log('--- Starting Order Processing Tests ---\n');
 
     //=============================================================================

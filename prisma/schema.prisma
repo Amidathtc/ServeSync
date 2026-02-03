@@ -29,6 +29,7 @@ model User {
   // Auth fields
   resetPasswordToken   String?
   resetPasswordExpires DateTime?
+  driverProfile        DriverProfile?
 
   @@map("users")
 }
@@ -38,6 +39,7 @@ enum Role {
   CUSTOMER
   KITCHEN
   ADMIN
+  DRIVER
 }
 
 // Restaurant model
@@ -83,14 +85,17 @@ model MenuItem {
 
 // Order model for managing customer orders
 model Order {
-  id           String      @id @default(cuid())
-  status       OrderStatus @default(PENDING)
-  total        Float
-  customerId   String
-  restaurantId String
-  notes        String?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  id               String      @id @default(cuid())
+  status           OrderStatus @default(PENDING)
+  subtotal         Float       @default(0) // Items total
+  deliveryFee      Float       @default(0)
+  deliveryDistance Float? // Distance in km
+  total            Float // subtotal + deliveryFee
+  customerId       String
+  restaurantId     String
+  notes            String?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
 
   // Relations
   customer   User        @relation(fields: [customerId], references: [id], onDelete: Cascade)
@@ -135,15 +140,20 @@ enum OrderStatus {
 
 // Payment model for payment processing
 model Payment {
-  id              String        @id @default(cuid())
-  orderId         String        @unique
-  amount          Float
-  paymentMethod   PaymentMethod
-  status          PaymentStatus @default(PENDING)
-  stripeSessionId String?
-  transactionId   String?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  id            String        @id @default(cuid())
+  orderId       String        @unique
+  amount        Float
+  currency      String        @default("NGN")
+  paymentMethod PaymentMethod
+  status        PaymentStatus @default(PENDING)
+
+  // Payment Gateway Fields
+  reference String? @unique // Transaction Ref
+  provider  String? // "PAYSTACK", "FLUTTERWAVE"
+  metadata  Json? // Extra gateway data
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
@@ -153,10 +163,9 @@ model Payment {
 
 // Payment method enum
 enum PaymentMethod {
-  CREDIT_CARD
-  DEBIT_CARD
-  PAYPAL
-  STRIPE
+  CARD
+  USSD
+  TRANSFER
   CASH
   WALLET
 }
@@ -164,8 +173,7 @@ enum PaymentMethod {
 // Payment status enum
 enum PaymentStatus {
   PENDING
-  PROCESSING
-  COMPLETED
+  SUCCESS
   FAILED
   REFUNDED
 }
@@ -184,7 +192,9 @@ model Delivery {
   updatedAt     DateTime       @updatedAt
 
   // Relations
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order    Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  driver   DriverProfile? @relation(fields: [driverId], references: [id])
+  driverId String?
 
   @@map("deliveries")
 }
@@ -206,10 +216,54 @@ model Review {
   comment   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
 
   // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   @@index([userId])
   @@map("reviews")
+}
+
+// Driver Management
+
+enum DriverStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+  SUSPENDED
+}
+
+enum VehicleType {
+  BICYCLE
+  MOTORCYCLE
+  CAR
+  VAN
+}
+
+model DriverProfile {
+  id     String       @id @default(cuid())
+  userId String       @unique
+  status DriverStatus @default(PENDING)
+
+  // Verification Details
+  vehicleType   VehicleType
+  vehiclePlate  String?
+  licenseNumber String?
+
+  // State
+  isOnline           Boolean   @default(false)
+  currentLat         Float?
+  currentLng         Float?
+  lastLocationUpdate DateTime?
+
+  // Financials
+  walletBalance Float @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deliveries Delivery[]
+
+  @@map("driver_profiles")
 }
