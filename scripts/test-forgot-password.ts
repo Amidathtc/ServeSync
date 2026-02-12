@@ -4,7 +4,7 @@ import { prisma } from '../src/config/prisma';
 // const prisma = new PrismaClient(); // Removed
 
 async function testForgotPassword() {
-    const baseUrl = 'http://localhost:3000';
+    const baseUrl = 'http://localhost:3100';
     const email = `reset_test_${Date.now()}@example.com`;
     const password = 'password123';
     const newPassword = 'newPassword456';

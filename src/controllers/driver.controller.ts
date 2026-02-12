@@ -97,8 +97,6 @@ export const updateLocation = async (req: Request, res: Response) => {
     }
 };
 
-// ... (Existing exports)
-
 export const getAvailableOrders = async (req: Request, res: Response) => {
     try {
         const userId = (req as any).user.id;

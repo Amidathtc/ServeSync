@@ -29,13 +29,14 @@ export class PaymentService {
 
         switch (method) {
             case 'CARD':
-                gatewayUrl = `https://checkout.mock-gateway.com/pay/${reference}`;
+                // In production, this would be the authorization_url from Paystack
+                gatewayUrl = `https://checkout.paystack.com/${reference}`;
                 break;
             case 'USSD':
                 confirmMessage = `Dial *737*000*${order.total}# to pay`;
                 break;
             case 'TRANSFER':
-                confirmMessage = `Transfer ₦${order.total} to Guarantee Trust Bank - 0000000000`;
+                confirmMessage = `Transfer ₦${order.total} to Wema Bank - 0000000000 (PaystackCheckout)`;
                 break;
             case 'WALLET':
                 return this.processWalletPayment(orderId, userId, order.total);
@@ -52,12 +53,11 @@ export class PaymentService {
                 paymentMethod: method,
                 status: 'PENDING',
                 reference,
-                provider: 'MOCK_GATEWAY'
+                provider: 'PAYSTACK' // Changed from MOCK_GATEWAY
             }
         });
 
         // 4. Simulate Async Webhook (For demo purposes only)
-        // WALLET payments are instant, others go via Gateway
         // WALLET payments are instant, others go via Gateway
         if ((method as string) !== 'WALLET') {
             this.simulateWebhook(reference);

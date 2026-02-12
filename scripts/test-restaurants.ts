@@ -4,7 +4,7 @@ import { prisma } from '../src/config/prisma';
  * Verification Script for Restaurant and Menu Management APIs with RBAC
  */
 async function testRestaurantFlow() {
-  const baseUrl = 'http://localhost:3000';
+  const baseUrl = 'http://localhost:3100';
   console.log('--- Starting Restaurant & Menu RBAC Tests ---');
 
   // =========================================================================

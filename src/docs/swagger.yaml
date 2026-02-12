@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: ServeSync API
-  description: Real-time logistics and food delivery backend for the Nigerian market.
+  description: Restaurant Order Management System with online ordering, real-time kitchen updates, payments, and analytics. Optional delivery features included.
   version: 1.0.0
 servers:
   - url: http://localhost:3100

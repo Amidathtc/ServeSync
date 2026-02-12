@@ -42,7 +42,9 @@ async function testPaymentFlow() {
         const paymentResult = await paymentService.initiatePayment(order.id, 'USSD' as any, user.id);
 
         console.log('✅ Payment Initiated:', paymentResult);
-        console.log(`📲 User Instructions: "${paymentResult.confirmMessage}"`);
+        if ('confirmMessage' in paymentResult) {
+            console.log(`📲 User Instructions: "${paymentResult.confirmMessage}"`);
+        }
 
         // Verify Database State (PENDING)
         const pendingPayment = await prisma.payment.findUnique({ where: { orderId: order.id } });

@@ -1,14 +1,22 @@
 # ServeSync 🚀
 
-ServeSync is a modern, real-time Food Delivery Backend API built for the Nigerian market. It features live order tracking, advanced driver logistics, and local payment integration.
+ServeSync is a modern **Restaurant Order Management System** that streamlines restaurant operations with online ordering, real-time kitchen updates, payments, and analytics. Built for the Nigerian market with local payment integration.
 
-## 🌟 Features
+## 🌟 Core Features
 
-*   **Real-Time Tracking:** Socket.io powered WebSocket server for live driver location updates.
-*   **Logistics Engine:** Geospatial algorithms (Haversine) for finding nearby drivers and calculating delivery fees.
-*   **Role-Based Access:** Secure generic RBAC for Customer, Restaurant (Kitchen), Driver, and Admin.
-*   **Payments:** Integrated Nigerian payment flows (USSD, Transfer, Wallet).
-*   **Notifications:** Centralized notification service stub (FCM/Email).
+*   **Online Ordering:** Customers can browse menus and place orders seamlessly.
+*   **Real-Time Kitchen Updates:** Socket.io powered WebSocket notifications for instant order alerts.
+*   **Order Management:** Complete workflow from PENDING → CONFIRMED → PREPARING → READY.
+*   **Payment Processing:** Integrated Nigerian payment methods (USSD, Bank Transfer, Cards, Wallet).
+*   **Restaurant Analytics:** Track performance, orders, and revenue.
+*   **Role-Based Access:** Secure RBAC for Customer, Restaurant (Kitchen), and Admin.
+*   **Menu Management:** Create and manage restaurant menus, categories, and pricing.
+
+## 🚚 Optional Delivery Features
+
+*   **Driver Management:** Assign and track delivery drivers.
+*   **Live Tracking:** Real-time driver location updates for order tracking.
+*   **Smart Assignment:** Geospatial algorithms for finding nearby drivers within 10km radius.
 
 ## 🛠️ Tech Stack
 

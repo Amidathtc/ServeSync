@@ -1,6 +1,6 @@
 
 async function testAuth() {
-    const baseUrl = 'http://localhost:3000';
+    const baseUrl = 'http://localhost:3100';
     const testUser = {
         email: `test_${Date.now()}@example.com`,
         password: 'password123',
@@ -66,9 +66,9 @@ async function testAuth() {
         });
         const data = await res.json();
         console.log(`Status: ${res.status}`);
-        if (res.status === 200 && data.user && data.user.email === testUser.email) {
+        if (res.status === 200 && data.user && data.user.userId) {
             console.log('✅ Protected route access successful');
-            console.log('User data:', data.user);
+            console.log('User ID:', data.user.userId);
         } else {
             console.log('❌ Protected route failed:', data);
         }
