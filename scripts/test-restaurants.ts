@@ -46,7 +46,7 @@ async function testRestaurantFlow() {
   }
 
   // =========================================================================
-  // 1. Register Kitchen Owner (should be able to create restaurant)
+  // 1. Register Kitchen Owner (should be able to create restaurant and s) 
   // =========================================================================
   const ownerEmail = `owner_${Date.now()}@test.com`;
   let ownerToken = '';
