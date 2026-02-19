@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import * as MenuService from '../services/menu.service';
+import { formatPriceInt, formatPrice } from '../utils/formatters';
 
 const createMenuItemSchema = z.object({
     name: z.string().min(1),
@@ -19,8 +20,18 @@ export const addItem = async (req: Request, res: Response) => {
         const { restaurantId } = req.params;
         const data = createMenuItemSchema.parse(req.body);
 
-        const item = await MenuService.addMenuItem(userId, restaurantId, data);
-        res.status(201).json(item);
+        const item: any = await MenuService.addMenuItem(userId, restaurantId, data);
+
+        // Format response with restaurant's currency
+        const formattedItem = {
+            ...item,
+            price: formatPriceInt(item.price),
+            formattedPrice: formatPrice(item.price, item.restaurantCurrency || 'NGN'),
+            currency: item.restaurantCurrency || 'NGN'
+        };
+
+        delete formattedItem.restaurantCurrency; // Remove internal field
+        res.status(201).json(formattedItem);
     } catch (error: any) {
         if (error instanceof z.ZodError) {
             res.status(400).json({ error: error.issues });
@@ -42,8 +53,18 @@ export const updateItem = async (req: Request, res: Response) => {
         const { itemId } = req.params;
         const data = updateMenuItemSchema.parse(req.body);
 
-        const item = await MenuService.updateMenuItem(userId, itemId, data);
-        res.json(item);
+        const item: any = await MenuService.updateMenuItem(userId, itemId, data);
+
+        // Format response with restaurant's currency
+        const formattedItem = {
+            ...item,
+            price: formatPriceInt(item.price),
+            formattedPrice: formatPrice(item.price, item.restaurantCurrency || 'NGN'),
+            currency: item.restaurantCurrency || 'NGN'
+        };
+
+        delete formattedItem.restaurantCurrency; // Remove internal field
+        res.json(formattedItem);
     } catch (error: any) {
         if (error instanceof z.ZodError) {
             res.status(400).json({ error: error.issues });
@@ -74,8 +95,21 @@ export const deleteItem = async (req: Request, res: Response) => {
 export const getItems = async (req: Request, res: Response) => {
     try {
         const { restaurantId } = req.params;
-        const items = await MenuService.getMenuItems(restaurantId);
-        res.json(items);
+        const items: any[] = await MenuService.getMenuItems(restaurantId);
+
+        // Format all prices with restaurant's currency
+        const formattedItems = items.map(item => {
+            const formatted = {
+                ...item,
+                price: formatPriceInt(item.price),
+                formattedPrice: formatPrice(item.price, item.restaurantCurrency || 'NGN'),
+                currency: item.restaurantCurrency || 'NGN'
+            };
+            delete formatted.restaurantCurrency; // Remove internal field
+            return formatted;
+        });
+
+        res.json(formattedItems);
     } catch (error: any) {
         res.status(500).json({ error: error.message });
     }

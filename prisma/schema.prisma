@@ -50,6 +50,7 @@ model Restaurant {
   phone     String?
   email     String?
   image     String?
+  currency  String   @default("NGN") // Currency code (NGN, USD, GBP, etc.)
   userId    String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

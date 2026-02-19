@@ -15,12 +15,15 @@ export const addMenuItem = async (userId: string, restaurantId: string, data: { 
         throw new Error('Unauthorized: You do not own this restaurant');
     }
 
-    return await prisma.menuItem.create({
+    const menuItem = await prisma.menuItem.create({
         data: {
             ...data,
             restaurantId,
         },
     });
+
+    // Return with restaurant currency
+    return { ...menuItem, restaurantCurrency: restaurant.currency };
 };
 
 export const updateMenuItem = async (userId: string, itemId: string, data: Partial<MenuItem>) => {
@@ -64,8 +67,16 @@ export const deleteMenuItem = async (userId: string, itemId: string) => {
 };
 
 export const getMenuItems = async (restaurantId: string) => {
-    return await prisma.menuItem.findMany({
+    const restaurant = await prisma.restaurant.findUnique({
+        where: { id: restaurantId },
+        select: { currency: true },
+    });
+
+    const items = await prisma.menuItem.findMany({
         where: { restaurantId },
         orderBy: { category: 'asc' }, // Organize by category
     });
+
+    // Add restaurant currency to each item
+    return items.map(item => ({ ...item, restaurantCurrency: restaurant?.currency || 'NGN' }));
 };
