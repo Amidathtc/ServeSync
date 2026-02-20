@@ -45,8 +45,16 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // Swagger Documentation
-const swaggerDocument = YAML.load(path.join(__dirname, 'docs/swagger.yaml'));
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// const swaggerDocument = YAML.load(path.join(__dirname, 'docs/swagger.yaml'));
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// Swagger Documentation (only in development)
+try {
+  const swaggerDocument = YAML.load(path.join(__dirname, 'docs/swagger.yaml'));
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  console.log('📚 Swagger docs available at /api-docs');
+} catch (error) {
+  console.log('⚠️  Swagger docs not available (file not found)');
+}
 
 // Routes
 app.use('/auth', authRoutes);
