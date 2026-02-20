@@ -2,11 +2,14 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 import * as RestaurantService from '../services/restaurant.service';
 
+const phoneRegex = /^\+[1-9]\d{6,14}$/;
+
 const createRestaurantSchema = z.object({
     name: z.string().min(2),
     address: z.string().min(5),
-    phone: z.string().optional(),
+    phone: z.string().regex(phoneRegex, 'Phone must be in E.164 format e.g. +2348012345678').optional(),
     email: z.string().email().optional(),
+    currency: z.string().length(3, 'Currency must be a 3-letter ISO code e.g. NGN, USD').optional(),
     image: z.string().url().optional(),
 });
 

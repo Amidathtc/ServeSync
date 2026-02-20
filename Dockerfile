@@ -35,6 +35,5 @@ COPY --from=builder /app/prisma ./prisma
 # Expose API port
 EXPOSE 3100
 
-# Start command (Run migrations deploy if needed, then start)
-# Note: In a real prod env, you typically run migrations in a separate release step.
-CMD ["node", "dist/index.js"]
+# Start command: runs prisma migrate deploy then starts the server
+CMD ["npm", "run", "start:prod"]
